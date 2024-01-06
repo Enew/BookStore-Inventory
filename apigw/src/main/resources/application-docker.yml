@@ -8,15 +8,15 @@ spring:
         gateway:
             routes:
                 - id: book-service-route
-                  uri: lb://book
+                  uri: lb://BOOK
                   predicates:
                       - Path=/books/**
                 - id: order-service-route
-                  uri: lb://order
+                  uri: lb://ORDER
                   predicates:
                       - Path=/orders/**
                 - id: user-service-route
-                  uri: lb://user
+                  uri: lb://USER
                   predicates:
                       - Path=/users/**
 
@@ -24,6 +24,6 @@ spring:
 eureka:
     client:
         service-url:
-            defaultZone: http://localhost:8761/eureka
+            defaultZone: http://eureka-server:8761/eureka
         fetch-registry: true
         register-with-eureka: true

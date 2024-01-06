@@ -30,70 +30,73 @@ services:
     networks:
       - spring
   eureka-server:
-    image: amigoscode/eureka-server:latest
+    image: enewcode/eureka-server:1.0
     container_name: eureka-server
     ports:
       - "8761:8761"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
     networks:
       - spring
     depends_on:
       - zipkin
-#  apigw:
-#    image: amigoscode/apigw:latest
-#    container_name: apigw
-#    ports:
-#      - "8083:8083"
-#    environment:
-#      - SPRING_PROFILES_ACTIVE=docker
-#    networks:
-#      - spring
-#    depends_on:
-#      - zipkin
-#      - eureka-server
-#  customer:
-#    image: amigoscode/customer:latest
-#    container_name: customer
-#    ports:
-#      - "8080:8080"
-#    environment:
-#      - SPRING_PROFILES_ACTIVE=docker
-#    networks:
-#      - spring
-#      - postgres
-#    depends_on:
-#      - zipkin
-#      - postgres
-#      - rabbitmq
-#  fraud:
-#    image: amigoscode/fraud:latest
-#    container_name: fraud
-#    ports:
-#      - "8081:8081"
-#    environment:
-#      - SPRING_PROFILES_ACTIVE=docker
-#    networks:
-#      - spring
-#      - postgres
-#    depends_on:
-#      - zipkin
-#      - postgres
-#      - rabbitmq
-#  notification:
-#    image: amigoscode/notification:latest
-#    container_name: notification
-#    ports:
-#      - "8082:8082"
-#    environment:
-#      - SPRING_PROFILES_ACTIVE=docker
-#    networks:
-#      - spring
-#      - postgres
-#    depends_on:
-#      - zipkin
-#      - postgres
-#      - rabbitmq
+  apigw:
+    image: enewcode/apigw:1.0
+    container_name: apigw
+    ports:
+      - "8083:8083"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - spring
+    depends_on:
+      - eureka-server
+  book:
+    image: enewcode/book:1.0
+    container_name: book-service
+    ports:
+      - "8085:8085"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - spring
+      - postgres
+      - book
+    depends_on:
+      - postgres
+      - rabbitmq
+  order:
+    image: enewcode/order:1.0
+    container_name: order-service
+    ports:
+      - "8086:8086"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - spring
+      - postgres
+      - book
+    depends_on:
+      - postgres
+      - rabbitmq
+  user:
+    image: enewcode/user:1.0
+    container_name: user-service
+    ports:
+      - "8087:8087"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - spring
+      - postgres
+    depends_on:
+      - postgres
+      - rabbitmq
+
 networks:
   postgres:
+    driver: bridge
+  book:
     driver: bridge
   spring:
     driver: bridge
