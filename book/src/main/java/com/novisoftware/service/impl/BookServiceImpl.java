@@ -1,6 +1,7 @@
 package com.novisoftware.service.impl;
 
 import com.novisoftware.application.mapper.BookMapper;
+import com.novisoftware.domain.dto.BookCreateDto;
 import com.novisoftware.domain.dto.BookDto;
 import com.novisoftware.domain.model.Book;
 import com.novisoftware.domain.repository.BookRepository;
@@ -8,6 +9,9 @@ import com.novisoftware.exception.BookNotFoundException;
 import com.novisoftware.service.BookService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -26,8 +30,8 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void createNewBook(BookDto bookDTO) {
-        Book newBook = bookMapper.toBook(bookDTO);
+    public void createNewBook(BookCreateDto bookDTO) {
+        var newBook = bookMapper.toBook(bookDTO);
         bookRepository.save(newBook);
     }
 
@@ -47,5 +51,13 @@ public class BookServiceImpl implements BookService {
         Book bookToDelete = bookRepository.findById(bookId)
                 .orElseThrow(() -> new BookNotFoundException("Book not found with id: " + bookId));
         bookRepository.delete(bookToDelete);
+    }
+
+    @Override
+    public List<BookDto> getAllBooks() {
+        return bookRepository.findAll()
+                .stream()
+                .map(bookMapper::toBookDto)
+                .collect(Collectors.toList());
     }
 }

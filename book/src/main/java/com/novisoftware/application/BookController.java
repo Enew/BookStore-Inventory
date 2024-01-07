@@ -1,18 +1,14 @@
 package com.novisoftware.application;
 
+import com.novisoftware.domain.dto.BookCreateDto;
 import com.novisoftware.domain.dto.BookDto;
 import com.novisoftware.service.BookService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/books")
@@ -27,8 +23,14 @@ public class BookController {
         return ResponseEntity.ok(bookDetails);
     }
 
+    @GetMapping
+    public ResponseEntity<List<BookDto>> getAllBooks() {
+        List<BookDto> allBooks = bookService.getAllBooks();
+        return ResponseEntity.ok(allBooks);
+    }
+
     @PostMapping
-    public ResponseEntity<Void> createNewBook( @RequestBody BookDto bookDto) {
+    public ResponseEntity<Void> createNewBook( @RequestBody BookCreateDto bookDto) {
         bookService.createNewBook(bookDto);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
